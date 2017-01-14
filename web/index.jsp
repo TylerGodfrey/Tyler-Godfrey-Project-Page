@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>Sample JSP Page</title>
+  <title>Tyler's Sample JSP Page</title>
 </head>
 <body>
 <h1>Tyler Godfrey's Sample Page</h1>
