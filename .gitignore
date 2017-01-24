@@ -1,1 +1,4 @@
 .idea/artifacts/CIS_320_First_Project_war.xml
+web/META-INF/context.xml
+out/
+.idea/
