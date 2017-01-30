@@ -12,6 +12,6 @@
 </head>
 <body>
 <h1>Tyler Godfrey's Sample Page</h1>
-<p>Hello world, my name's Tyler!</p>
+<p>Hello world, my name's Tyler Godfrey!</p>
 </body>
 </html>
