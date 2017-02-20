@@ -5,6 +5,17 @@
          version="3.1">
 
     <servlet>
+        <servlet-name>NameListModify</servlet-name>
+        <servlet-class>webdev.project.first.NameListModify</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>NameListModify</servlet-name>
+        <url-pattern>/api/name_list_modify</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
         <servlet-name>NameListGet</servlet-name>
         <servlet-class>webdev.project.first.NameListGet</servlet-class>
     </servlet>

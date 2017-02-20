@@ -2,3 +2,5 @@
 web/META-INF/context.xml
 out/
 .idea/
+web/js/PinBreaker.js
+web/pin_breaker.html

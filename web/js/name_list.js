@@ -6,7 +6,10 @@ function updateTable() {
     // Here's where your code is going to go.
     var url = "api/name_list_get";
     var table = document.getElementById("datatable");
-    var rowIndex = 1;
+    var rowIndex = 0;
+    while ($('#datatable')[0].rows[0] != null) {
+        $('#datatable')[0].rows[0].remove();
+    }
     $.getJSON(url, null, function(json_result) {
         for (var i = 0; i < json_result.length; i++) {
             var row = table.insertRow(rowIndex);
@@ -17,7 +20,7 @@ function updateTable() {
             var cell5 = row.insertCell(4);
             var cell6 = row.insertCell(5);
             var corrPhoneNumber = json_result[i].phone;
-            corrPhoneNumber = corrPhoneNumber.substring(0,3) + "-" + corrPhoneNumber.substring(3,6) + "-" + corrPhoneNumber.substring(6,10);
+            corrPhoneNumber = corrPhoneNumber.substring(0, 3) + "-" + corrPhoneNumber.substring(3, 6) + "-" + corrPhoneNumber.substring(6, 10);
             cell1.innerHTML = json_result[i].id;
             cell2.innerHTML = json_result[i].first;
             cell3.innerHTML = json_result[i].last;
@@ -27,8 +30,6 @@ function updateTable() {
             console.log(json_result[i].first);
             rowIndex++;
         }
-        $('#datatable')[0].rows[0].remove();
-        $('#datatable')[0].rows[rowIndex - 1].remove();
     })
 }
 
@@ -80,7 +81,13 @@ function showDialogAdd() {
 }
 
 function saveChanges() {
+    checkValues();
     console.log("New item has been added.");
+}
+
+function checkValues() {
+
+    var validForm = true;
 
     var savedId = $('#id').val();
     var savedFirstName = $('#firstName').val();
@@ -113,6 +120,8 @@ function saveChanges() {
         $('#firstNameGlyph').addClass("glyphicon-remove");
 
         $('#firstNameStatus').val("failure");
+
+        validForm = false;
     }
 
     if (regNames.test(savedLastName)) {
@@ -133,6 +142,8 @@ function saveChanges() {
         $('#lastNameGlyph').addClass("glyphicon-remove");
 
         $('#lastNameStatus').val("failure");
+
+        validForm = false;
     }
 
     if (regEmail.test(savedEmail)) {
@@ -153,6 +164,8 @@ function saveChanges() {
         $('#emailGlyph').addClass("glyphicon-remove");
 
         $('#emailStatus').val("failure");
+
+        validForm = false;
     }
 
     if (regPhonesDash.test(savedPhone)) {
@@ -185,6 +198,8 @@ function saveChanges() {
             $('#phoneGlyph').addClass("glyphicon-remove");
 
             $('#phoneStatus').val("failure");
+
+            validForm = false;
         }
     }
 
@@ -206,10 +221,39 @@ function saveChanges() {
         $('#birthdayGlyph').addClass("glyphicon-remove");
 
         $('#birthdayStatus').val("failure");
+
+        validForm = false;
     }
 
-    console.log(savedId + ", " + savedFirstName + ", " + savedLastName + ", " + savedEmail + ", " + savedPhone + ", " + savedBirthday);
+    if (validForm == true) {
+        console.log(savedId + ", " + savedFirstName + ", " + savedLastName + ", " + savedEmail + ", " + savedPhone + ", " + savedBirthday);
+        jqueryPostButtonAction();
+    } else {
+        console.log("Error: invalid value entered.");
+    }
 }
+
+
+function jqueryPostButtonAction() {
+
+    var url = "api/name_list_modify";
+    var firstNameValue = $("#firstName").val();
+    var lastNameValue = $("#lastName").val();
+    var emailValue = $("#email").val();
+    var phoneValue = $("#phone").val();
+    var birthdayValue = $("#birthday").val();
+    var dataToServer = { firstName : firstNameValue, lastName : lastNameValue, email : emailValue, phone : phoneValue, birthday : birthdayValue };
+
+    $.post(url, dataToServer, function (dataFromServer) {
+        console.log("Finished calling servlet.");
+        console.log(dataFromServer);
+        updateTable();
+    });
+
+}
+var jqueryPostButton = $('#jqueryPostButton');
+jqueryPostButton.on("click", jqueryPostButtonAction);
+
 
 var saveChangesButton = $('#saveChanges');
 saveChangesButton.on("click", saveChanges);
