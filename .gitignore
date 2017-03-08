@@ -4,3 +4,6 @@ out/
 .idea/
 web/js/PinBreaker.js
 web/pin_breaker.html
+src/webdev/writing/bruteforce/PinCracker.java
+src/webdev/writing/bruteforce/PinCheck.java
+src/webdev/writing/bruteforce/PasswordCheck.java

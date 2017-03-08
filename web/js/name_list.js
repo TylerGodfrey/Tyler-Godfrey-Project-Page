@@ -1,12 +1,10 @@
-/**
- * Created by yerfd on 1/31/2017.
- */
-
 function updateTable() {
     // Here's where your code is going to go.
     var url = "api/name_list_get";
     var table = document.getElementById("datatable");
     var rowIndex = 0;
+    var regPhonesDash = /^\d{3}-\d{3}-\d{4}$/;
+    var regPhonesNoDash = /^\d{10}$/;
     while ($('#datatable')[0].rows[0] != null) {
         $('#datatable')[0].rows[0].remove();
     }
@@ -20,16 +18,22 @@ function updateTable() {
             var cell5 = row.insertCell(4);
             var cell6 = row.insertCell(5);
             var corrPhoneNumber = json_result[i].phone;
-            corrPhoneNumber = corrPhoneNumber.substring(0, 3) + "-" + corrPhoneNumber.substring(3, 6) + "-" + corrPhoneNumber.substring(6, 10);
+            if (regPhonesNoDash.test(corrPhoneNumber)) {
+                corrPhoneNumber = corrPhoneNumber.substring(0,3) + "-" + corrPhoneNumber.substring(3, 6) + "-" + corrPhoneNumber.substring(6,10);
+            }
+            var cell7 = row.insertCell(6);
             cell1.innerHTML = json_result[i].id;
             cell2.innerHTML = json_result[i].first;
             cell3.innerHTML = json_result[i].last;
             cell4.innerHTML = json_result[i].email;
             cell5.innerHTML = corrPhoneNumber;
             cell6.innerHTML = json_result[i].birthday;
+            cell7.innerHTML = "<button type='button' name='delete' class='deleteButton btn' value='" + json_result[i].id + "'>Delete</button>";
             console.log(json_result[i].first);
             rowIndex++;
         }
+        var buttons = $(".deleteButton");
+        buttons.on("click", deleteItem);
     })
 }
 
@@ -251,16 +255,29 @@ function jqueryPostButtonAction() {
     });
 
 }
+
+function deleteItem(e) {
+    console.debug("Delete");
+    var idValue = e.target.value;
+    console.debug(idValue);
+    var url = "api/name_list_delete";
+    var dataToServer = { id : idValue };
+
+    $.post(url, dataToServer, function (dataFromServer) {
+        console.log("Finished calling servlet.");
+        console.log(dataFromServer);
+        updateTable();
+    })
+}
+
 var jqueryPostButton = $('#jqueryPostButton');
 jqueryPostButton.on("click", jqueryPostButtonAction);
-
 
 var saveChangesButton = $('#saveChanges');
 saveChangesButton.on("click", saveChanges);
 
 var addItemButton = $('#addItem');
 addItemButton.on("click", showDialogAdd);
-
 
 // Call your code.
 updateTable();

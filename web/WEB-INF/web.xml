@@ -25,4 +25,25 @@
         <url-pattern>/api/name_list_get</url-pattern>
     </servlet-mapping>
 
+    
+    <servlet>
+        <servlet-name>NameListDelete</servlet-name>
+        <servlet-class>webdev.project.first.NameListDelete</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>NameListDelete</servlet-name>
+        <url-pattern>/api/name_list_delete</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>PasswordCheck</servlet-name>
+        <servlet-class>webdev.writing.bruteforce.PasswordCheck</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PasswordCheck</servlet-name>
+        <url-pattern>/api/password_check</url-pattern>
+    </servlet-mapping>
+
 </web-app>
