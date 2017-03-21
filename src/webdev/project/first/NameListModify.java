@@ -31,6 +31,7 @@ public class NameListModify extends HttpServlet {
         phoneNumberNoDashPattern = Pattern.compile("^\\d{10}$");
         birthdayPattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
         emailAddressPattern = Pattern.compile("^[A-Za-z0-9\\._%+\\-]+@[A-Za-z0-9\\.\\-]+\\.[a-z]{2,4}$");
+        //emailAddressPattern = Pattern.compile("\\S+");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,6 +41,10 @@ public class NameListModify extends HttpServlet {
         // Just confirm we are calling the servlet we think we are
         out.println("JSON Post");
         Person person = new Person();
+        if (request.getParameter("id") != null && request.getParameter("id").length() > 0) {
+            person.setId(Integer.parseInt(request.getParameter("id")));
+        }
+
         person.setFirst(request.getParameter("firstName"));
         person.setLast(request.getParameter("lastName"));
         person.setEmail(request.getParameter("email"));
@@ -61,21 +66,26 @@ public class NameListModify extends HttpServlet {
             out.println("Did not pass last name validation");
             return;
         }
-        m = namePattern.matcher(person.getEmail());
+        m = emailAddressPattern.matcher(person.getEmail());
         if (m.find( )) {
             out.println("Passed email validation");
         } else {
             out.println("Did not pass email validation");
             return;
         }
-        m = namePattern.matcher(person.getPhone());
+        m = phoneNumberDashPattern.matcher(person.getPhone());
         if (m.find( )) {
             out.println("Passed phone number validation");
         } else {
-            out.println("Did not pass phone number validation");
-            return;
+            m = phoneNumberNoDashPattern.matcher(person.getPhone());
+            if (m.find( )) {
+                out.println("Missing dashes; otherwise fine.");
+            } else {
+                out.println("Did not pass phone number validation");
+                return;
+            }
         }
-        m = namePattern.matcher(person.getBirthday());
+        m = birthdayPattern.matcher(person.getBirthday());
         if (m.find( )) {
             out.println("Passed birthday validation");
         } else {
@@ -101,7 +111,15 @@ public class NameListModify extends HttpServlet {
 
         // Make sure our field was set.
         out.println("First name: "+person.getFirst() + ", Last name: "+person.getLast() + ", Email: "+person.getEmail() + ", Phone: "+person.getPhone() + ", Birthday: "+person.getBirthday());
-        PersonDAO.addPeople(person);
+        if (person.getId() == null){
+            out.println("Adding person.");
+            PersonDAO.addPeople(person);
+        }
+        else {
+            out.println("Editing person.");
+            PersonDAO.editPeople(person);
+        }
+
 
     }
 }

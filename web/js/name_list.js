@@ -22,18 +22,23 @@ function updateTable() {
                 corrPhoneNumber = corrPhoneNumber.substring(0,3) + "-" + corrPhoneNumber.substring(3, 6) + "-" + corrPhoneNumber.substring(6,10);
             }
             var cell7 = row.insertCell(6);
+            var cell8 = row.insertCell(7);
             cell1.innerHTML = json_result[i].id;
             cell2.innerHTML = json_result[i].first;
             cell3.innerHTML = json_result[i].last;
             cell4.innerHTML = json_result[i].email;
             cell5.innerHTML = corrPhoneNumber;
             cell6.innerHTML = json_result[i].birthday;
-            cell7.innerHTML = "<button type='button' name='delete' class='deleteButton btn' value='" + json_result[i].id + "'>Delete</button>";
+            cell7.innerHTML = "<button type='button' name='edit' class='editButton btn' value='" + json_result[i].id + "'>Edit</button>";
+            cell8.innerHTML = "<button type='button' name='delete' class='deleteButton btn' value='" + json_result[i].id + "'>Delete</button>";
             console.log(json_result[i].first);
             rowIndex++;
         }
-        var buttons = $(".deleteButton");
-        buttons.on("click", deleteItem);
+        var delButtons = $(".deleteButton");
+        delButtons.on("click", deleteItem);
+
+        var editButtons = $(".editButton");
+        editButtons.on("click", editItem);
     })
 }
 
@@ -85,12 +90,18 @@ function showDialogAdd() {
 }
 
 function saveChanges() {
-    checkValues();
+    if (checkValues() == true) {
+        jqueryPostButtonAction();
+    } else {
+        console.log("Error: invalid data.");
+    };
+
     console.log("New item has been added.");
+    $('#myModal').modal('hide');
 }
 
 function checkValues() {
-
+    console.log($('#id').val());
     var validForm = true;
 
     var savedId = $('#id').val();
@@ -231,9 +242,11 @@ function checkValues() {
 
     if (validForm == true) {
         console.log(savedId + ", " + savedFirstName + ", " + savedLastName + ", " + savedEmail + ", " + savedPhone + ", " + savedBirthday);
-        jqueryPostButtonAction();
+        //jqueryPostButtonAction();
+        return true;
     } else {
         console.log("Error: invalid value entered.");
+        return false;
     }
 }
 
@@ -241,12 +254,13 @@ function checkValues() {
 function jqueryPostButtonAction() {
 
     var url = "api/name_list_modify";
+    var idValue = $("#id").val();
     var firstNameValue = $("#firstName").val();
     var lastNameValue = $("#lastName").val();
     var emailValue = $("#email").val();
     var phoneValue = $("#phone").val();
     var birthdayValue = $("#birthday").val();
-    var dataToServer = { firstName : firstNameValue, lastName : lastNameValue, email : emailValue, phone : phoneValue, birthday : birthdayValue };
+    var dataToServer = { id : idValue, firstName : firstNameValue, lastName : lastNameValue, email : emailValue, phone : phoneValue, birthday : birthdayValue };
 
     $.post(url, dataToServer, function (dataFromServer) {
         console.log("Finished calling servlet.");
@@ -268,6 +282,37 @@ function deleteItem(e) {
         console.log(dataFromServer);
         updateTable();
     })
+}
+
+function editItem(e) {
+    console.debug("Edit");
+    var idValue = e.target.value;
+    //console.log("edit item: id value = " + idValue);
+    // This next line is fun.
+    // "e" is the event of the mouse click
+    // "e.target" is what the user clicked on. The button in this case.
+    // "e.target.parentNode" is the node that holds the button. In this case, the table cell.
+    // "e.target.parentNode.parentNode" is the parent of the table cell. In this case, the table row.
+    // "e.target.parentNode.parentNode.querySelectorAll("td")" gets an array of all matching table cells in the row
+    // "e.target.parentNode.parentNode.querySelectorAll("td")[0]" is the first cell. (You can grab cells 0, 1, 2, etc.)
+    // "e.target.parentNode.parentNode.querySelectorAll("td")[0].innerHTML" is content of that cell. Like "Sam" for example.
+    // How did I find this long chain? Just by setting a breakpoint and using the interactive shell in my browser.
+    var firstName = e.target.parentNode.parentNode.querySelectorAll("td")[1].innerHTML;
+    var lastName = e.target.parentNode.parentNode.querySelectorAll("td")[2].innerHTML;
+    var email = e.target.parentNode.parentNode.querySelectorAll("td")[3].innerHTML;
+    var phoneNumber = e.target.parentNode.parentNode.querySelectorAll("td")[4].innerHTML;
+    var birthdate = e.target.parentNode.parentNode.querySelectorAll("td")[5].innerHTML;
+    $('#id').val(idValue);
+    console.log($('#id').val());
+    $('#firstName').val(firstName);
+    $('#lastName').val(lastName);
+    $('#email').val(email);
+    $('#phone').val(phoneNumber);
+    $('#birthday').val(birthdate);
+
+    $('#myModal').modal('show');
+
+    console.log("id: " + idValue + ", firstName: " + firstName + ", lastName: " + lastName + ", email: " + email + ", phone number: " + phoneNumber + ", birthday: " + birthdate);
 }
 
 var jqueryPostButton = $('#jqueryPostButton');
