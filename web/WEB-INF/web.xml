@@ -4,6 +4,37 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+
+    <servlet>
+        <servlet-name>InvalidateSessionServlet</servlet-name>
+        <servlet-class>webdev.project.first.InvalidateSessionServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>InvalidateSessionServlet</servlet-name>
+        <url-pattern>/api/invalidate_session_servlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>login_servlet</servlet-name>
+        <servlet-class>webdev.project.first.login_servlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>login_servlet</servlet-name>
+        <url-pattern>/api/login_servlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>get_login_servlet</servlet-name>
+        <servlet-class>webdev.project.first.get_login_servlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>get_login_servlet</servlet-name>
+        <url-pattern>/api/get_login_servlet</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>NameListModify</servlet-name>
         <servlet-class>webdev.project.first.NameListModify</servlet-class>
